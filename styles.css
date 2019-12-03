@@ -1,0 +1,11 @@
+/* Boilerplate */
+html {
+    box-sizing: border-box;
+    font-size: 10px;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+}

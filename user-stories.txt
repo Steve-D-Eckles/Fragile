@@ -1,0 +1,48 @@
+Requirements:
+A "start screen"
+  -Background image
+  -Title
+  -Start button
+Start button that falls when clicked
+Start button breaks into pieces
+Pieces are hidden behind 4 puzzles
+Pieces can be collected and re-assembled to win
+Character in background image uses text box to guide the player
+Puzzles:
+  Sliding Puzzle:
+    -4x4 grid with 15 pieces and 1 empty space
+    -Only tiles adjacent to empty space slide when clicked
+  Memory Puzzle:
+    -4x4 arrangement of tiles with 8 matching pairs of icons on the hidden side
+    -randomized arrangement
+    -Reveal 2 cards at a time, they stay revealed if they match; otherwise, they are re-hidden
+  Maze Puzzle:
+    -Piece can be clicked on to drag it through the maze
+    -Piece resets to starting position if it touches sides of the maze
+  Guessing Game:
+    -Dice are rolled and the result is shown to the player
+    -Player can guess higher or lower to predict the next roll
+    -Player scores a point on a correct prediction
+
+
+User Stories:
+As a player, I want to...
+1. click a start button so I can begin the game (1)
+2. break the start button so I have a goal (2)
+3. see arrows so I can know how to navigate (3)
+4. click the maze arrow to see the maze (2)
+5. drag the piece through the maze without touching the sides to complete the maze (5)
+6. click the vault arrow to see the sliding puzzle (2)
+7. click a sliding puzzle piece to move it to the open square (3)
+8. get all the pieces to the right place to solve the sliding puzzle (2)
+9. click the gambler arrow to see the guessing game (2)
+10. see the dice roll results so I can make an informed guess (3)
+11. click a higher button or lower button to guess what the next result will be (2)
+12. see how many times I've guessed correctly in a row so I can know how I'm doing
+13. guess correctly 3 times in a row to win the game
+14. click the forest arrow to see the memory puzzle (2)
+15. click a tile to reveal it (1)
+16. match tiles to make progress (3)
+17. match all the tiles to win (2)
+18. assemble the pieces to complete the game (3)
+19. see a text box to get an idea what to do next (3)
