@@ -34,3 +34,39 @@ const gameStart = () => {
 const start = document.getElementById('start')
 const main = document.body.children[0]
 start.addEventListener('click', gameStart)
+// draw memory game table
+// when button is clicked, make a div with class of "overlay" that contains the game
+
+// create a div with a class of "overlay"
+
+function travel (){
+
+}
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex, board;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+
+  }
+  // modify this to place each random number into a table cell.
+
+
+  return array;
+}
+
+// Used like so
+let array = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8];
+array = shuffle(array);
+console.log(array);
+// Add event listeners for the table cells
