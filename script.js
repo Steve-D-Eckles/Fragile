@@ -38,57 +38,39 @@ start.addEventListener('click', gameStart)
 // when button is clicked, make a div with class of "overlay" that contains the game
 
 // create a div with a class of "overlay"
-overlay = document.createElement("div");
+const overlay = document.createElement('div')
 
 function travel (event) {
-  //create div
-  //give it a class "overlay"
-  overlay.classList.add("overlay");
-  main.appendChild(overlay);
-  //determine the game being played
+  // create div
+  // give it a class "overlay"
+  overlay.classList.add('overlay')
+  main.appendChild(overlay)
+  // determine the game being played
   const targetClasses = Array.from(event.target.classList)
-  if (targetClasses.includes("forest")) {
+  if (targetClasses.includes('forest')) {
     // call "forest" function
     forest()
   }
 }
 
-function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex, board;
-
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-
-  }
-  // modify this to place each random number into a table cell.
-
-
-  return array;
-}
-
 // Used like so
-function forest() {
-let array = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8];
-array = shuffle(array);
-const table = document.createElement("table");
-for (i = 0; i < 4; i++) {
-  const row = document.createElement("tr");
-  for (n = 0; n < 4; n++) {
-    const tile = document.createElement("td");
-    row.appendChild(tile);
+function forest () {
+  const arr = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8]
+  const table = document.createElement('table')
+  for (let i = 0; i < 4; i++) {
+    const row = document.createElement('tr')
+    for (let n = 0; n < 4; n++) {
+      const tile = document.createElement('td')
+      tile.textContent = arr.splice(Math.floor(Math.random() * arr.length), 1)
+      tile.addEventListener('click', flip)
+      row.appendChild(tile)
+    }
+    table.appendChild(row)
   }
-  table.appendChild(row);
-}
-overlay.appendChild(table);
+  overlay.appendChild(table)
 // console.log(array);
 }
 // Add event listeners for the table cells
+function flip (event) {
+  event.target.classList.add('flipped')
+}
