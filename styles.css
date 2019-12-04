@@ -54,3 +54,12 @@ h1 {
   text-transform: capitalize;
   color: white;
 }
+
+/* overlay */
+.overlay {
+  position: absolute;
+  height: 450px;
+  width: 750px;
+  border: solid black 1px;
+  background-color: white;
+}

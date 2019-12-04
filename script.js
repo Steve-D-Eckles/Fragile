@@ -14,7 +14,7 @@ const gameStart = () => {
     }
     arrow.classList.add(navList[i])
     arrow.textContent = navList[i]
-    arrow.addEventListener('click', () => console.log('hi'))
+    arrow.addEventListener('click', travel)
     document.body.getElementsByTagName('main')[0].appendChild(arrow)
   }
   // explode the start button
@@ -39,8 +39,12 @@ start.addEventListener('click', gameStart)
 
 // create a div with a class of "overlay"
 
-function travel (){
-
+function travel (event) {
+  //create div
+  const overlay = document.createElement("div");
+  //give it a class "overlay"
+  overlay.classList.add("overlay");
+  main.appendChild(overlay);
 }
 
 function shuffle(array) {
