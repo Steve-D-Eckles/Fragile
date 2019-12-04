@@ -53,24 +53,49 @@ function travel (event) {
   }
 }
 
-// Used like so
 function forest () {
+  overlay.style.backgroundColor = 'green'
+  // list of pairs for the game
   const arr = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8]
+  let turn = 0
+  let attempts = 15
+  let prevTarget
+  let delayFlag = false
+  // create the table for the game
   const table = document.createElement('table')
   for (let i = 0; i < 4; i++) {
     const row = document.createElement('tr')
     for (let n = 0; n < 4; n++) {
       const tile = document.createElement('td')
+      // assign a value to each tile randomly from the list
       tile.textContent = arr.splice(Math.floor(Math.random() * arr.length), 1)
-      tile.addEventListener('click', flip)
+      tile.addEventListener('click', event => {
+        if (!delayFlag) {
+          // reveal the value when clicked
+          event.target.classList.add('flipped')
+          // on the first turn, get the value of the selected tile
+          if (turn === 0) {
+            turn++
+            prevTarget = event.target
+          } else {
+            turn = 0
+            attempts--
+            // on the second turn, check that the values match
+            // if they do, keep them revealed. If not, hide them again
+            if (event.target.textContent !== prevTarget.textContent) {
+              delayFlag = true
+              setTimeout(() => {
+                event.target.classList.remove('flipped')
+                prevTarget.classList.remove('flipped')
+                delayFlag = false
+              }, 500)
+            } else prevTarget = undefined // clear the previous target
+          }
+        }
+      })
       row.appendChild(tile)
     }
     table.appendChild(row)
   }
   overlay.appendChild(table)
-// console.log(array);
-}
-// Add event listeners for the table cells
-function flip (event) {
-  event.target.classList.add('flipped')
 }
