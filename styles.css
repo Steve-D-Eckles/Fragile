@@ -57,9 +57,23 @@ h1 {
 
 /* overlay */
 .overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   height: 450px;
   width: 750px;
   border: solid black 1px;
   background-color: white;
+}
+
+/* table */
+table {
+
+}
+
+td {
+  height: 100px;
+  width: 100px;
+  border: 1px solid black;
 }

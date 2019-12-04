@@ -38,13 +38,19 @@ start.addEventListener('click', gameStart)
 // when button is clicked, make a div with class of "overlay" that contains the game
 
 // create a div with a class of "overlay"
+overlay = document.createElement("div");
 
 function travel (event) {
   //create div
-  const overlay = document.createElement("div");
   //give it a class "overlay"
   overlay.classList.add("overlay");
   main.appendChild(overlay);
+  //determine the game being played
+  const targetClasses = Array.from(event.target.classList)
+  if (targetClasses.includes("forest")) {
+    // call "forest" function
+    forest()
+  }
 }
 
 function shuffle(array) {
@@ -70,7 +76,19 @@ function shuffle(array) {
 }
 
 // Used like so
+function forest() {
 let array = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8];
 array = shuffle(array);
-console.log(array);
+const table = document.createElement("table");
+for (i = 0; i < 4; i++) {
+  const row = document.createElement("tr");
+  for (n = 0; n < 4; n++) {
+    const tile = document.createElement("td");
+    row.appendChild(tile);
+  }
+  table.appendChild(row);
+}
+overlay.appendChild(table);
+// console.log(array);
+}
 // Add event listeners for the table cells
