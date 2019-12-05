@@ -107,12 +107,34 @@ function forest () {
 function gambler () {
   // Add "Wanna Play?" button
   const button = document.createElement('button')
+  button.classList.add('gambler-button')
   button.innerHTML = "Wanna play?";
   overlay.appendChild(button)
   // Make two (maybe 4) squares once the "Wanna Play?" button is clicked
     // Remove the "Wanna play?" button, make the squares
   button.addEventListener('click', removeButton)
   function removeButton (event) {
+    let total = 0
     button.remove()
+    const gamblerGame = document.createElement('div')
+    gamblerGame.classList.add('gambler-game')
+    const gamblerTotal = document.createElement('div')
+    gamblerTotal.classList.add('gambler-total')
+    gamblerGame.appendChild(gamblerTotal)
+    for (let i = 0; i < 1; i++) {
+      const gamblerDice = document.createElement('div')
+      gamblerDice.classList.add('gambler-dice')
+      for (let n = 0; n < 2; n++) {
+        const gamblerSquare = document.createElement('p')
+        // the following line inserts random numbers into the squares
+        gamblerSquare.textContent = Math.floor(Math.random()*6) + 1
+        total += Number(gamblerSquare.textContent)
+        gamblerDice.appendChild(gamblerSquare)
+      }
+      gamblerGame.appendChild(gamblerDice)
+    }
+    overlay.appendChild(gamblerGame)
+    gamblerTotal.textContent = total
   }
+  // add numbers in the squares
 }
