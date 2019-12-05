@@ -88,3 +88,9 @@ td span {
 .flipped {
   display: inline;
 }
+
+button {
+  border: 1px solid black;
+  font-size: 36pt;
+  padding: 10px;
+}
