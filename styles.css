@@ -88,3 +88,27 @@ td span {
 .flipped {
   display: inline;
 }
+
+/* sidebar */
+.sidebar {
+  border: 1px solid black;
+  display: flex;
+  height: 410px;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  margin-left: 1rem;
+  padding: 1rem;
+  width: 250px;
+}
+
+.sidebar p {
+  font-size: 2.25rem;
+  text-align: center;
+  white-space: pre-line;
+}
+
+.sidebar button {
+  padding: 0.5rem;
+  font-size: 2rem;
+}

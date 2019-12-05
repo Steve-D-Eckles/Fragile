@@ -53,13 +53,40 @@ function travel (event) {
   }
 }
 
+let delayFlag = false
+
 function forest () {
   // list of pairs for the game
   const arr = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8]
   let turn = 0
   let attempts = 15
   let prevTarget
-  let delayFlag = false
+  // let delayFlag = false
+
+  // create a sidebar with attempt countdown, win/loss announce, and exit button
+  const sidebar = document.createElement('div')
+  sidebar.classList.add('sidebar')
+
+  const attemptCounter = document.createElement('p')
+  attemptCounter.classList.add('attempts')
+  attemptCounter.textContent = `Remaining attempts:\n${attempts}`
+  sidebar.appendChild(attemptCounter)
+
+  const objective = document.createElement('p')
+  objective.classList.add('objective')
+  objective.textContent = 'Start Button Piece Available!'
+  sidebar.appendChild(objective)
+
+  const restartButton = document.createElement('button')
+  restartButton.classList.add('restart')
+  restartButton.textContent = 'Restart'
+  sidebar.appendChild(restartButton)
+
+  const exitButton = document.createElement('button')
+  exitButton.classList.add('exit')
+  exitButton.textContent = 'Head Back'
+  sidebar.appendChild(exitButton)
+
   // create the table for the game
   const table = document.createElement('table')
   for (let i = 0; i < 4; i++) {
@@ -71,7 +98,7 @@ function forest () {
       span.textContent = arr.splice(Math.floor(Math.random() * arr.length), 1)
       tile.appendChild(span)
       tile.addEventListener('click', event => {
-        if (!delayFlag) {
+        if (!delayFlag && !event.target.firstChild.hasAttributes()) {
           // reveal the value when clicked
           event.target.firstChild.classList.add('flipped')
           // on the first turn, get the value of the selected tile
@@ -80,7 +107,6 @@ function forest () {
             prevTarget = event.target.firstChild
           } else {
             turn = 0
-            attempts--
             // on the second turn, check that the values match
             // if they do, keep them revealed. If not, hide them again
             if (event.target.firstChild.textContent !== prevTarget.textContent) {
@@ -90,7 +116,24 @@ function forest () {
                 prevTarget.classList.remove('flipped')
                 delayFlag = false
               }, 500)
-            } else prevTarget = undefined // clear the previous target
+            } else {
+              arr.push(prevTarget.textContent)
+              if (arr.length === 8) {
+                objective.textContent = 'Button Piece\nRetrieved!'
+                delayFlag = true
+              }
+              prevTarget = undefined // clear the previous target
+            }
+            // count down remaining attempts
+            attempts--
+            attemptCounter.textContent = `Remaining attempts:\n${attempts}`
+            // check for loss
+            if (attempts === 0 && arr.length < 8) {
+              objective.textContent = 'You\nLost!'
+              setTimeout(() => {
+                delayFlag = true
+              }, 501)
+            }
           }
         }
       })
@@ -99,4 +142,5 @@ function forest () {
     table.appendChild(row)
   }
   overlay.appendChild(table)
+  overlay.appendChild(sidebar)
 }
