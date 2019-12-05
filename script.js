@@ -56,15 +56,13 @@ function travel (event) {
   }
 }
 
-let delayFlag = false
-
 function forest () {
   // list of pairs for the game
-  const arr = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8]
+  let arr = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8]
   let turn = 0
   let attempts = 15
   let prevTarget
-  // let delayFlag = false
+  let delayFlag = false
 
   // create a sidebar with attempt countdown, win/loss announce, and exit button
   const sidebar = document.createElement('div')
@@ -83,69 +81,97 @@ function forest () {
   const restartButton = document.createElement('button')
   restartButton.classList.add('restart')
   restartButton.textContent = 'Restart'
+  restartButton.addEventListener('click', () => {
+    arr = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8]
+    attempts = 15
+    prevTarget = undefined
+    delayFlag = false
+    attemptCounter.textContent = `Remaining attempts:\n${attempts}`
+    objective.textContent = 'Start Button Piece Available!'
+    const table = Array.from(document.getElementsByTagName('table'))
+    for (const elem of table) {
+      elem.remove()
+    }
+    createTable()
+  })
   sidebar.appendChild(restartButton)
 
   const exitButton = document.createElement('button')
   exitButton.classList.add('exit')
   exitButton.textContent = 'Head Back'
+  exitButton.addEventListener('click', removeOverlay)
   sidebar.appendChild(exitButton)
 
   // create the table for the game
-  const table = document.createElement('table')
-  for (let i = 0; i < 4; i++) {
-    const row = document.createElement('tr')
-    for (let n = 0; n < 4; n++) {
-      const tile = document.createElement('td')
-      const span = document.createElement('span')
-      // assign a value to each tile randomly from the list
-      span.textContent = arr.splice(Math.floor(Math.random() * arr.length), 1)
-      tile.appendChild(span)
-      tile.addEventListener('click', event => {
-        if (!delayFlag && !event.target.firstChild.hasAttributes()) {
-          // reveal the value when clicked
-          event.target.firstChild.classList.add('flipped')
-          // on the first turn, get the value of the selected tile
-          if (turn === 0) {
-            turn++
-            prevTarget = event.target.firstChild
-          } else {
-            turn = 0
-            // on the second turn, check that the values match
-            // if they do, keep them revealed. If not, hide them again
-            if (event.target.firstChild.textContent !== prevTarget.textContent) {
-              delayFlag = true
-              setTimeout(() => {
-                event.target.firstChild.classList.remove('flipped')
-                prevTarget.classList.remove('flipped')
-                delayFlag = false
-              }, 500)
+  const createTable = () => {
+    const table = document.createElement('table')
+    for (let i = 0; i < 4; i++) {
+      const row = document.createElement('tr')
+      for (let n = 0; n < 4; n++) {
+        const tile = document.createElement('td')
+        const span = document.createElement('span')
+        // assign a value to each tile randomly from the list
+        span.textContent = arr.splice(Math.floor(Math.random() * arr.length), 1)
+        tile.appendChild(span)
+        tile.addEventListener('click', event => {
+          let classes = []
+          if (event.target.firstChild.classList) {
+            classes = Array.from(event.target.firstChild.classList)
+          }
+          if (!delayFlag && !classes.includes('flipped')) {
+            // reveal the value when clicked
+            event.target.firstChild.classList.add('flipped')
+            // on the first turn, get the value of the selected tile
+            if (turn === 0) {
+              turn++
+              prevTarget = event.target.firstChild
             } else {
-              arr.push(prevTarget.textContent)
-              if (arr.length === 8) {
-                objective.textContent = 'Button Piece\nRetrieved!'
+              turn = 0
+              // on the second turn, check that the values match
+              // if they do, keep them revealed. If not, hide them again
+              if (event.target.firstChild.textContent !== prevTarget.textContent) {
                 delayFlag = true
+                setTimeout(() => {
+                  event.target.firstChild.classList.remove('flipped')
+                  prevTarget.classList.remove('flipped')
+                  delayFlag = false
+                }, 500)
+              } else {
+                arr.push(prevTarget.textContent)
+                if (arr.length === 8) {
+                  objective.textContent = 'Button Piece\nRetrieved!'
+                  delayFlag = true
+                }
+                prevTarget = undefined // clear the previous target
               }
-              prevTarget = undefined // clear the previous target
-            }
-            // count down remaining attempts
-            attempts--
-            attemptCounter.textContent = `Remaining attempts:\n${attempts}`
-            // check for loss
-            if (attempts === 0 && arr.length < 8) {
-              objective.textContent = 'You\nLost!'
-              setTimeout(() => {
-                delayFlag = true
-              }, 501)
+              // count down remaining attempts
+              attempts--
+              attemptCounter.textContent = `Remaining attempts:\n${attempts}`
+              // check for loss
+              if (attempts === 0 && arr.length < 8) {
+                objective.textContent = 'You\nLost!'
+                setTimeout(() => {
+                  delayFlag = true
+                }, 501)
+              }
             }
           }
-        }
-      })
-      row.appendChild(tile)
+        })
+        row.appendChild(tile)
+      }
+      table.appendChild(row)
     }
-    table.appendChild(row)
+    overlay.appendChild(table)
+    overlay.appendChild(sidebar)
   }
-  overlay.appendChild(table)
-  overlay.appendChild(sidebar)
+  createTable()
+}
+
+function removeOverlay () {
+  while (overlay.firstChild) {
+    overlay.firstChild.remove()
+  }
+  overlay.remove()
 }
 
 function gambler () {
