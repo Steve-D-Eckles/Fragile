@@ -54,7 +54,6 @@ function travel (event) {
 }
 
 function forest () {
-  overlay.style.backgroundColor = 'green'
   // list of pairs for the game
   const arr = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8]
   let turn = 0
@@ -67,25 +66,27 @@ function forest () {
     const row = document.createElement('tr')
     for (let n = 0; n < 4; n++) {
       const tile = document.createElement('td')
+      const span = document.createElement('span')
       // assign a value to each tile randomly from the list
-      tile.textContent = arr.splice(Math.floor(Math.random() * arr.length), 1)
+      span.textContent = arr.splice(Math.floor(Math.random() * arr.length), 1)
+      tile.appendChild(span)
       tile.addEventListener('click', event => {
         if (!delayFlag) {
           // reveal the value when clicked
-          event.target.classList.add('flipped')
+          event.target.firstChild.classList.add('flipped')
           // on the first turn, get the value of the selected tile
           if (turn === 0) {
             turn++
-            prevTarget = event.target
+            prevTarget = event.target.firstChild
           } else {
             turn = 0
             attempts--
             // on the second turn, check that the values match
             // if they do, keep them revealed. If not, hide them again
-            if (event.target.textContent !== prevTarget.textContent) {
+            if (event.target.firstChild.textContent !== prevTarget.textContent) {
               delayFlag = true
               setTimeout(() => {
-                event.target.classList.remove('flipped')
+                event.target.firstChild.classList.remove('flipped')
                 prevTarget.classList.remove('flipped')
                 delayFlag = false
               }, 500)
