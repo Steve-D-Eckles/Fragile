@@ -51,6 +51,9 @@ function travel (event) {
     // call "forest" function
     forest()
   }
+  if (targetClasses.includes('gambler')) {
+    gambler()
+  }
 }
 
 let delayFlag = false
@@ -143,4 +146,17 @@ function forest () {
   }
   overlay.appendChild(table)
   overlay.appendChild(sidebar)
+}
+
+function gambler () {
+  // Add "Wanna Play?" button
+  const button = document.createElement('button')
+  button.innerHTML = "Wanna play?";
+  overlay.appendChild(button)
+  // Make two (maybe 4) squares once the "Wanna Play?" button is clicked
+    // Remove the "Wanna play?" button, make the squares
+  button.addEventListener('click', removeButton)
+  function removeButton (event) {
+    button.remove()
+  }
 }
