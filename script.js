@@ -96,10 +96,7 @@ function forest () {
     delayFlag = false
     attemptCounter.textContent = `Remaining attempts:\n${attempts}`
     objective.textContent = 'Start Button Piece Available!'
-    const table = Array.from(document.getElementsByTagName('table'))
-    for (const elem of table) {
-      elem.remove()
-    }
+    removeTable()
     createMemoryTable()
   })
   sidebar.appendChild(restartButton)
@@ -183,6 +180,21 @@ function removeOverlay () {
   currentlyPlaying = false
 }
 
+function removeTable () {
+  const table = Array.from(document.getElementsByTagName('table'))
+  for (const elem of table) {
+    elem.remove()
+  }
+}
+
+function winCheck (state) {
+  const solution = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '']
+  for (let i = 0; i < solution.length; i++) {
+    if (state[i] !== solution[i]) return false
+  }
+  return true
+}
+
 function gambler () {
   // Add "Wanna Play?" button
   const button = document.createElement('button')
@@ -250,10 +262,7 @@ function vault () {
   restartButton.textContent = 'Restart'
   restartButton.addEventListener('click', () => {
     objective.textContent = 'Start Button Piece Available!'
-    const table = Array.from(document.getElementsByTagName('table'))
-    for (const elem of table) {
-      elem.remove()
-    }
+    removeTable()
     state = slideShuffle()
     createVaultTable()
   })
@@ -275,6 +284,37 @@ function vault () {
         const tile = document.createElement('td')
         tile.textContent = state[index]
         index++
+        tile.addEventListener('click', event => {
+          const tarIndex = state.indexOf(event.target.textContent)
+          const check = []
+          const leftEdge = [4, 8, 12]
+          const rightEdge = [3, 7, 11]
+          if (leftEdge.includes(tarIndex)) {
+            check.push(state[tarIndex + 1])
+            check.push(state[tarIndex - 4])
+            check.push(state[tarIndex + 4])
+          } else if (rightEdge.includes(tarIndex)) {
+            check.push(state[tarIndex - 1])
+            check.push(state[tarIndex - 4])
+            check.push(state[tarIndex + 4])
+          } else {
+            for (let i = 1; i < 5; i += 3) {
+              check.push(state[tarIndex + i])
+              check.push(state[tarIndex - i])
+            }
+          }
+          if (check.includes('')) {
+            const temp = state[tarIndex]
+            state[state.indexOf('')] = temp
+            state[tarIndex] = ''
+            if (winCheck(state)) {
+              objective.textContent = 'You\nWon!'
+              state[15] = '16'
+            }
+            removeTable()
+            createVaultTable()
+          }
+        })
         row.appendChild(tile)
       }
       table.appendChild(row)
