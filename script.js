@@ -39,20 +39,28 @@ start.addEventListener('click', gameStart)
 
 // create a div with a class of "overlay"
 const overlay = document.createElement('div')
+// flag to prevent attempting to open multiple games
+let currentlyPlaying = false
 
 function travel (event) {
-  // create div
-  // give it a class "overlay"
-  overlay.classList.add('overlay')
-  main.appendChild(overlay)
-  // determine the game being played
-  const targetClasses = Array.from(event.target.classList)
-  if (targetClasses.includes('forest')) {
-    // call "forest" function
-    forest()
-  }
-  if (targetClasses.includes('gambler')) {
-    gambler()
+  if (!currentlyPlaying) {
+    currentlyPlaying = true
+    // create div
+    // give it a class "overlay"
+    overlay.classList.add('overlay')
+    main.appendChild(overlay)
+    // determine the game being played
+    const targetClasses = Array.from(event.target.classList)
+    if (targetClasses.includes('forest')) {
+      // call "forest" function
+      forest()
+    }
+    if (targetClasses.includes('gambler')) {
+      gambler()
+    }
+    if (targetClasses.includes('vault')) {
+      vault()
+    }
   }
 }
 
@@ -92,7 +100,7 @@ function forest () {
     for (const elem of table) {
       elem.remove()
     }
-    createTable()
+    createMemoryTable()
   })
   sidebar.appendChild(restartButton)
 
@@ -103,7 +111,7 @@ function forest () {
   sidebar.appendChild(exitButton)
 
   // create the table for the game
-  const createTable = () => {
+  const createMemoryTable = () => {
     const table = document.createElement('table')
     for (let i = 0; i < 4; i++) {
       const row = document.createElement('tr')
@@ -164,7 +172,7 @@ function forest () {
     overlay.appendChild(table)
     overlay.appendChild(sidebar)
   }
-  createTable()
+  createMemoryTable()
 }
 
 function removeOverlay () {
@@ -172,6 +180,7 @@ function removeOverlay () {
     overlay.firstChild.remove()
   }
   overlay.remove()
+  currentlyPlaying = false
 }
 
 function gambler () {
@@ -181,7 +190,7 @@ function gambler () {
   button.innerHTML = "Wanna play?";
   overlay.appendChild(button)
   // Make two (maybe 4) squares once the "Wanna Play?" button is clicked
-    // Remove the "Wanna play?" button, make the squares
+  // Remove the "Wanna play?" button, make the squares
   button.addEventListener('click', removeButton)
   function removeButton (event) {
     let total = 0
@@ -207,4 +216,68 @@ function gambler () {
     gamblerTotal.textContent = total
   }
   // add numbers in the squares
+}
+
+function vault () {
+  // define starting configuration
+  const slideShuffle = () => {
+    const start = ['', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']
+    const state = []
+    while (start.length > 0) {
+      state.push(String(start.splice(Math.random() * start.length, 1)))
+    }
+    let inversions = 0
+    const filtered = state.filter(a => a !== '').map(a => Number(a))
+    for (const elem of filtered) {
+      inversions += filtered.filter(a => filtered.indexOf(a) > filtered.indexOf(elem) && a < elem).length
+    }
+    const index = state.indexOf('')
+    const line = ((index > 0 && index < 4) || (index > 7 && index < 12)) ? 1 : 0
+    return line % 2 + inversions % 2 === 1 ? state : slideShuffle()
+  }
+  const state = slideShuffle()
+  // create a sidebar with status, reset, and exit
+  const sidebar = document.createElement('div')
+  sidebar.classList.add('sidebar')
+
+  const objective = document.createElement('p')
+  objective.classList.add('objective')
+  objective.textContent = 'Start Button Piece Available!'
+  sidebar.appendChild(objective)
+
+  const restartButton = document.createElement('button')
+  restartButton.classList.add('restart')
+  restartButton.textContent = 'Restart'
+  restartButton.addEventListener('click', () => {
+    objective.textContent = 'Start Button Piece Available!'
+    const table = Array.from(document.getElementsByTagName('table'))
+    for (const elem of table) {
+      elem.remove()
+    }
+    createVaultTable()
+  })
+  sidebar.appendChild(restartButton)
+
+  const exitButton = document.createElement('button')
+  exitButton.classList.add('exit')
+  exitButton.textContent = 'Head Back'
+  exitButton.addEventListener('click', removeOverlay)
+  sidebar.appendChild(exitButton)
+
+  // create the table
+  const createVaultTable = () => {
+    let index = 0
+    const table = document.createElement('table')
+    for (let i = 0; i < 4; i++) {
+      const row = document.createElement('tr')
+      for (let n = 0; n < 4; n++) {
+        const tile = document.createElement('td')
+        tile.textContent = state[index]
+        index++
+        row.appendChild(tile)
+      }
+      table.appendChild(row)
+    }
+    overlay.appendChild(table)
+  }
 }
