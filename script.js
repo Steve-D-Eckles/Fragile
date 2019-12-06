@@ -232,10 +232,10 @@ function vault () {
       inversions += filtered.filter(a => filtered.indexOf(a) > filtered.indexOf(elem) && a < elem).length
     }
     const index = state.indexOf('')
-    const line = ((index > 0 && index < 4) || (index > 7 && index < 12)) ? 1 : 0
+    const line = ((index >= 0 && index < 4) || (index > 7 && index < 12)) ? 0 : 1
     return line % 2 + inversions % 2 === 1 ? state : slideShuffle()
   }
-  const state = slideShuffle()
+  let state = slideShuffle()
   // create a sidebar with status, reset, and exit
   const sidebar = document.createElement('div')
   sidebar.classList.add('sidebar')
@@ -254,6 +254,7 @@ function vault () {
     for (const elem of table) {
       elem.remove()
     }
+    state = slideShuffle()
     createVaultTable()
   })
   sidebar.appendChild(restartButton)
@@ -279,5 +280,7 @@ function vault () {
       table.appendChild(row)
     }
     overlay.appendChild(table)
+    overlay.appendChild(sidebar)
   }
+  createVaultTable()
 }
