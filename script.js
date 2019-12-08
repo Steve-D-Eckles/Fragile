@@ -1,5 +1,11 @@
+const start = document.getElementById('start')
+const main = document.body.children[0]
+const infoBox = document.createElement('p')
+let collected = 0
+start.addEventListener('click', gameStart)
+
 // remove the start button; add the navigation buttons
-const gameStart = () => {
+function gameStart () {
   const navList = ['forest', 'gambler', 'vault', 'drain']
   // create the nav buttons
   for (let i = 0; i < 4; i++) {
@@ -14,33 +20,60 @@ const gameStart = () => {
     }
     arrow.classList.add(navList[i])
     arrow.textContent = navList[i]
+    arrow.addEventListener('mouseenter', navInfo)
+    arrow.addEventListener('mouseleave', statusUpdate)
     arrow.addEventListener('click', travel)
-    document.body.getElementsByTagName('main')[0].appendChild(arrow)
+    main.appendChild(arrow)
   }
   // explode the start button
   start.removeEventListener('click', gameStart)
   start.style.visibility = 'hidden'
+
   const placeHolder = document.createElement('p')
   placeHolder.style.fontSize = '5rem'
   placeHolder.textContent = '💥'
   placeHolder.style.position = 'absolute'
   placeHolder.style.top = '310px'
   main.appendChild(placeHolder)
+
+  infoBox.setAttribute('id', 'info')
+  infoBox.textContent = 'Whoa!'
+  main.appendChild(infoBox)
+
   setTimeout(() => {
     placeHolder.remove()
-  }, 325)
+    infoBox.textContent = "Looks like you hit that button a bit too hard! You'd " +
+    "better go collect the pieces. I've added some signs indicating where they ended up. " +
+    "Hover over each one and I'll tell you some more about it."
+  }, 500)
 }
 
-const start = document.getElementById('start')
-const main = document.body.children[0]
-start.addEventListener('click', gameStart)
-// draw memory game table
-// when button is clicked, make a div with class of "overlay" that contains the game
-
-// create a div with a class of "overlay"
+// create an overlay div
 const overlay = document.createElement('div')
 // flag to prevent attempting to open multiple games
 let currentlyPlaying = false
+
+function navInfo (event) {
+  const tarClass = event.target.classList[1]
+  if (tarClass === 'forest') {
+    infoBox.textContent = 'That way leads to the forest! The sprites there probably ' +
+    'grabbed the piece. They love to play games though, so they\'ll probably give it ' +
+    'to you if you play something with them.'
+  } else if (tarClass === 'gambler') {
+    infoBox.textContent = "That way leads to the gambler's house. He's got a serious " +
+    "problem, so he'll probably let you win it in a game."
+  } else if (tarClass === 'vault') {
+    infoBox.textContent = "That's the entrance to the vault. The guards lock anything " +
+    "that looks valuable in there, but they'll probably let you in to grab it if you ask nicely."
+  } else if (tarClass === 'drain') {
+    infoBox.textContent = 'Looks like one of the pieces just fell down that drain.' +
+    "Guess you'll have to fish it out."
+  }
+}
+
+function statusUpdate () {
+  infoBox.textContent = `Looks like you've still got ${4 - collected} pieces to find.`
+}
 
 function travel (event) {
   if (!currentlyPlaying) {
