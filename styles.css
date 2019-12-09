@@ -111,11 +111,8 @@ td span {
 .sidebar button {
   padding: 0.5rem;
   font-size: 2rem;
-
-.gambler-game {
-  /* display: block; */
 }
-
+/* Gambler Game */
 .gambler-total {
   border: 1px solid black;
   height: 125px;
@@ -126,12 +123,29 @@ td span {
   margin-bottom: 10px;
 }
 
-.gambler-button {
+.gambler-square0, .gambler-square1 {
+  margin: auto;
+}
+
+.gamble-buttons {
+  padding-top: 20px;
+}
+
+.overlay {
+  flex-direction: column;
+}
+
+.gambler-button, .gamble-low, .gamble-high {
   border: 1px solid black;
   font-size: 36pt;
   padding: 10px;
   border-radius: 10px;
   background-color: white;
+}
+
+.gamble-low, .gamble-high {
+  font-size: 12pt;
+  margin: 10px;
 }
 
 .gambler-dice {

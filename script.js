@@ -182,29 +182,111 @@ function gambler () {
   overlay.appendChild(button)
   // Make two (maybe 4) squares once the "Wanna Play?" button is clicked
     // Remove the "Wanna play?" button, make the squares
-  button.addEventListener('click', removeButton)
-  function removeButton (event) {
-    let total = 0
+  // This runs an unnamed function
+  let total = 0
+  let points = 0
+  button.addEventListener('click', () => {
+    total = 0
     button.remove()
     const gamblerGame = document.createElement('div')
     gamblerGame.classList.add('gambler-game')
     const gamblerTotal = document.createElement('div')
     gamblerTotal.classList.add('gambler-total')
+    const gamblerDisplay = document.createElement('div')
+    gamblerDisplay.classList.add('gambler-display')
     gamblerGame.appendChild(gamblerTotal)
     for (let i = 0; i < 1; i++) {
       const gamblerDice = document.createElement('div')
       gamblerDice.classList.add('gambler-dice')
       for (let n = 0; n < 2; n++) {
         const gamblerSquare = document.createElement('p')
-        // the following line inserts random numbers into the squares
+        gamblerSquare.classList.add('gambler-square'+n)
+        // the following 2 lines insert random numbers into the squares
         gamblerSquare.textContent = Math.floor(Math.random()*6) + 1
         total += Number(gamblerSquare.textContent)
+
         gamblerDice.appendChild(gamblerSquare)
       }
       gamblerGame.appendChild(gamblerDice)
     }
-    overlay.appendChild(gamblerGame)
+
     gamblerTotal.textContent = total
+
+    const gambleButtons = document.createElement('div')
+    gambleButtons.classList.add('gamble-buttons')
+
+    const gambleButtonLow = document.createElement('button')
+    gambleButtonLow.classList.add('gamble-low')
+    gambleButtonLow.textContent = "Guess lower"
+    gambleButtonLow.addEventListener('click', checkGuess)
+
+    const gambleButtonHigh = document.createElement('button')
+    gambleButtonHigh.classList.add('gamble-high')
+    gambleButtonHigh.textContent = "Guess higher"
+    gambleButtonHigh.addEventListener('click', checkGuess)
+
+    gambleButtons.appendChild(gambleButtonLow)
+    gambleButtons.appendChild(gambleButtonHigh)
+
+    gamblerDisplay.appendChild(gamblerGame)
+    gamblerDisplay.appendChild(gambleButtons)
+    overlay.appendChild(gamblerDisplay)
+
+  })
+
+  // define variables used in the "checkGuess" and "generate" functions
+  let guess = 0;
+  function checkGuess (event) {
+    //console.log("NEEDS WORK")
+
+    // if "gamble-low" is clicked and the next roll is lower, award a point
+    // if "gamble-low" is clicked and the next roll is higher, set points to zero
+    // if "gamble-high" is clicked and the next roll is higher, award a point
+    // if "gamble-high" is clicked and the next roll is lower, set points to zero
+    const gamblerTotal = document.getElementsByClassName('gambler-total')[0]
+    total = Number(gamblerTotal.textContent)
+    const square0 = document.querySelector(".gambler-square0")
+    const square1 = document.querySelector(".gambler-square1")
+    square0.textContent = Math.floor(Math.random()*6) + 1
+    square1.textContent = Math.floor(Math.random()*6) + 1
+    const newTotal = Number(square0.textContent) + Number(square1.textContent)
+    gamblerTotal.textContent = newTotal
+    const gambleChoice = Array.from(event.target.classList)
+    // if "gamble-low" is clicked, set "guess" to 0
+    if (gambleChoice.includes('gamble-low')) {
+      guess = 0
+      //console.log(guess)
+      console.log(total)
+      console.log(newTotal)
+      // if "newTotal" < "total" AND "guess" = 0, award a point
+      if (newTotal < total) {
+        points ++;
+      }
+      if (newTotal >= total) {
+        points = 0
+      }
+      console.log("points = " + points)
+      // if "newTotal" >= "total" AND "guess" = 0, set points to zero
+    }
+    // if "gamble-high" is clicked, set "guess" to 1
+    if (gambleChoice.includes('gamble-high')) {
+      guess = 1
+      //console.log(guess)
+      console.log(total)
+      console.log(newTotal)
+      // if "newTotal" < "total" AND "guess" = 1, set points to zero
+      if (newTotal <= total) {
+        points = 0
+      }
+      // if "newTotal" > "total" AND "guess" = 1, award a point
+      if (newTotal > total) {
+        points ++
+      }
+      console.log("points = " + points)
+    }
+    console.log(guess)
+    // store "total" in "old-total"
+    // roll "total"
+    // compare
   }
-  // add numbers in the squares
 }
