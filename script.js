@@ -61,12 +61,12 @@ function navInfo (event) {
     'to you if you play something with them.'
   } else if (tarClass === 'gambler') {
     infoBox.textContent = "That way leads to the gambler's house. He's got a serious " +
-    "problem, so he'll probably let you win it in a game."
+    "problem, so he'll probably let you win the piece in a game."
   } else if (tarClass === 'vault') {
     infoBox.textContent = "That's the entrance to the vault. The guards lock anything " +
-    "that looks valuable in there, but they'll probably let you in to grab it if you ask nicely."
+    "that looks valuable in there, but they'll probably let you in to grab the piece if you ask nicely."
   } else if (tarClass === 'drain') {
-    infoBox.textContent = 'Looks like one of the pieces just fell down that drain.' +
+    infoBox.textContent = 'Looks like one of the pieces just fell down that drain. ' +
     "Guess you'll have to fish it out."
   }
 }
@@ -93,6 +93,9 @@ function travel (event) {
     }
     if (targetClasses.includes('vault')) {
       vault()
+    }
+    if (targetClasses.includes('drain')) {
+      drain()
     }
   }
 }
@@ -356,4 +359,43 @@ function vault () {
     overlay.appendChild(sidebar)
   }
   createVaultTable()
+}
+
+function drain () {
+  const sidebar = document.createElement('div')
+  sidebar.classList.add('sidebar')
+
+  const objective = document.createElement('p')
+  objective.classList.add('objective')
+  objective.textContent = 'Start Button Piece Available!'
+  sidebar.appendChild(objective)
+
+  const restartButton = document.createElement('button')
+  restartButton.classList.add('restart')
+  restartButton.textContent = 'Restart'
+  restartButton.addEventListener('click', () => {
+    objective.textContent = 'Start Button Piece Available!'
+    document.getElementById('maze').remove()
+    createMaze()
+  })
+  sidebar.appendChild(restartButton)
+
+  const exitButton = document.createElement('button')
+  exitButton.classList.add('exit')
+  exitButton.textContent = 'Head Back'
+  exitButton.addEventListener('click', removeOverlay)
+  sidebar.appendChild(exitButton)
+
+  const createMaze = () => {
+    const maze = document.createElement('div')
+    maze.setAttribute('id', 'maze')
+    const piece = document.createElement('div')
+    piece.setAttribute('id', 'maze-piece')
+    piece.textContent = '⭐'
+    maze.appendChild(piece)
+    overlay.appendChild(maze)
+    overlay.appendChild(sidebar)
+  }
+
+  createMaze()
 }

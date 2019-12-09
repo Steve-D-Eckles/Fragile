@@ -158,6 +158,24 @@ td span {
   text-align: center;
 }
 
+/* Maze */
+#maze {
+  width: 410px;
+  height: 410px;
+  border: 1px solid black;
+  position: relative;
+}
+
+#maze-piece {
+  width: 20px;
+  height: 25px;
+  border: 1px solid black;
+  font-size: 2rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
 /* Info Text */
 #info {
   border: 1px solid black;
@@ -167,4 +185,5 @@ td span {
   position: absolute;
   top: 400px;
   padding: 1rem;
+  text-align: center;
 }
