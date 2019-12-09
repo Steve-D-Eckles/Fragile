@@ -38,21 +38,38 @@ h1 {
   font-size: 4rem;
   text-transform: uppercase;
   font-family: helvetica, sans-serif;
+  border: 1px solid black;
+  box-shadow: 0px 0px 3px #c6c6c6;
 }
 
 .start:hover {
   color: red;
   font-style: italic;
+  box-shadow: -5px 5px 5px #c6c6c6;
+  position: relative;
+  top: -1px;
+  left: 1px;
+  cursor: pointer;
 }
 
 /** NAV ARROWS **/
 .arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
-  height: 100px;
+  font-size: 2rem;
+  font-family: cursive;
+  height: 50px;
   width: 100px;
-  background-color: black;
+  background-color: #c19a6b;
   text-transform: capitalize;
-  color: white;
+  color: black;
+}
+
+.arrow:hover {
+  box-shadow: 0px 5px 5px 5px #c6c6c6;
+  cursor: pointer;
 }
 
 /* overlay */
@@ -68,9 +85,6 @@ h1 {
 }
 
 /* table */
-table {
-
-}
 
 td {
   height: 100px;
@@ -112,6 +126,7 @@ td span {
   padding: 0.5rem;
   font-size: 2rem;
 }
+
 /* Gambler Game */
 .gambler-total {
   border: 1px solid black;
@@ -158,4 +173,15 @@ td span {
   height: 100px;
   font-size: 36pt;
   text-align: center;
+}
+
+/* Info Text */
+#info {
+  border: 1px solid black;
+  border-radius: 5px;
+  max-width: 250px;
+  font-size: 1.6rem;
+  position: absolute;
+  top: 400px;
+  padding: 1rem;
 }

@@ -1,5 +1,11 @@
+const start = document.getElementById('start')
+const main = document.body.children[0]
+const infoBox = document.createElement('p')
+let collected = 0
+start.addEventListener('click', gameStart)
+
 // remove the start button; add the navigation buttons
-const gameStart = () => {
+function gameStart () {
   const navList = ['forest', 'gambler', 'vault', 'drain']
   // create the nav buttons
   for (let i = 0; i < 4; i++) {
@@ -14,45 +20,80 @@ const gameStart = () => {
     }
     arrow.classList.add(navList[i])
     arrow.textContent = navList[i]
+    arrow.addEventListener('mouseenter', navInfo)
+    arrow.addEventListener('mouseleave', statusUpdate)
     arrow.addEventListener('click', travel)
-    document.body.getElementsByTagName('main')[0].appendChild(arrow)
+    main.appendChild(arrow)
   }
   // explode the start button
   start.removeEventListener('click', gameStart)
   start.style.visibility = 'hidden'
+
   const placeHolder = document.createElement('p')
   placeHolder.style.fontSize = '5rem'
   placeHolder.textContent = '💥'
   placeHolder.style.position = 'absolute'
   placeHolder.style.top = '310px'
   main.appendChild(placeHolder)
+
+  infoBox.setAttribute('id', 'info')
+  infoBox.textContent = 'Whoa!'
+  main.appendChild(infoBox)
+
   setTimeout(() => {
     placeHolder.remove()
-  }, 325)
+    infoBox.textContent = "Looks like you hit that button a bit too hard! You'd " +
+    "better go collect the pieces. I've added some signs indicating where they ended up. " +
+    "Hover over each one and I'll tell you some more about it."
+  }, 500)
 }
 
-const start = document.getElementById('start')
-const main = document.body.children[0]
-start.addEventListener('click', gameStart)
-// draw memory game table
-// when button is clicked, make a div with class of "overlay" that contains the game
-
-// create a div with a class of "overlay"
+// create an overlay div
 const overlay = document.createElement('div')
+// flag to prevent attempting to open multiple games
+let currentlyPlaying = false
+
+function navInfo (event) {
+  const tarClass = event.target.classList[1]
+  if (tarClass === 'forest') {
+    infoBox.textContent = 'That way leads to the forest! The sprites there probably ' +
+    'grabbed the piece. They love to play games though, so they\'ll probably give it ' +
+    'to you if you play something with them.'
+  } else if (tarClass === 'gambler') {
+    infoBox.textContent = "That way leads to the gambler's house. He's got a serious " +
+    "problem, so he'll probably let you win it in a game."
+  } else if (tarClass === 'vault') {
+    infoBox.textContent = "That's the entrance to the vault. The guards lock anything " +
+    "that looks valuable in there, but they'll probably let you in to grab it if you ask nicely."
+  } else if (tarClass === 'drain') {
+    infoBox.textContent = 'Looks like one of the pieces just fell down that drain.' +
+    "Guess you'll have to fish it out."
+  }
+}
+
+function statusUpdate () {
+  infoBox.textContent = `Looks like you've still got ${4 - collected} pieces to find.`
+}
 
 function travel (event) {
-  // create div
-  // give it a class "overlay"
-  overlay.classList.add('overlay')
-  main.appendChild(overlay)
-  // determine the game being played
-  const targetClasses = Array.from(event.target.classList)
-  if (targetClasses.includes('forest')) {
-    // call "forest" function
-    forest()
-  }
-  if (targetClasses.includes('gambler')) {
-    gambler()
+  if (!currentlyPlaying) {
+    currentlyPlaying = true
+    // create div
+    // give it a class "overlay"
+    overlay.classList.add('overlay')
+    main.appendChild(overlay)
+    // determine the game being played
+    const targetClasses = Array.from(event.target.classList)
+    if (targetClasses.includes('forest')) {
+      // call "forest" function
+      forest()
+    }
+    if (targetClasses.includes('gambler')) {
+      gambler()
+    }
+    if (targetClasses.includes('vault')) {
+      vault()
+    }
   }
 }
 
@@ -88,11 +129,8 @@ function forest () {
     delayFlag = false
     attemptCounter.textContent = `Remaining attempts:\n${attempts}`
     objective.textContent = 'Start Button Piece Available!'
-    const table = Array.from(document.getElementsByTagName('table'))
-    for (const elem of table) {
-      elem.remove()
-    }
-    createTable()
+    removeTable()
+    createMemoryTable()
   })
   sidebar.appendChild(restartButton)
 
@@ -103,7 +141,7 @@ function forest () {
   sidebar.appendChild(exitButton)
 
   // create the table for the game
-  const createTable = () => {
+  const createMemoryTable = () => {
     const table = document.createElement('table')
     for (let i = 0; i < 4; i++) {
       const row = document.createElement('tr')
@@ -164,7 +202,7 @@ function forest () {
     overlay.appendChild(table)
     overlay.appendChild(sidebar)
   }
-  createTable()
+  createMemoryTable()
 }
 
 function removeOverlay () {
@@ -172,6 +210,22 @@ function removeOverlay () {
     overlay.firstChild.remove()
   }
   overlay.remove()
+  currentlyPlaying = false
+}
+
+function removeTable () {
+  const table = Array.from(document.getElementsByTagName('table'))
+  for (const elem of table) {
+    elem.remove()
+  }
+}
+
+function winCheck (state) {
+  const solution = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '']
+  for (let i = 0; i < solution.length; i++) {
+    if (state[i] !== solution[i]) return false
+  }
+  return true
 }
 
 function gambler () {
@@ -289,4 +343,99 @@ function gambler () {
     // roll "total"
     // compare
   }
+}
+
+function vault () {
+  // define starting configuration
+  const slideShuffle = () => {
+    const start = ['', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']
+    const state = []
+    while (start.length > 0) {
+      state.push(String(start.splice(Math.random() * start.length, 1)))
+    }
+    let inversions = 0
+    const filtered = state.filter(a => a !== '').map(a => Number(a))
+    for (const elem of filtered) {
+      inversions += filtered.filter(a => filtered.indexOf(a) > filtered.indexOf(elem) && a < elem).length
+    }
+    const index = state.indexOf('')
+    const line = ((index >= 0 && index < 4) || (index > 7 && index < 12)) ? 0 : 1
+    return line % 2 + inversions % 2 === 1 ? state : slideShuffle()
+  }
+  let state = slideShuffle()
+  // create a sidebar with status, reset, and exit
+  const sidebar = document.createElement('div')
+  sidebar.classList.add('sidebar')
+
+  const objective = document.createElement('p')
+  objective.classList.add('objective')
+  objective.textContent = 'Start Button Piece Available!'
+  sidebar.appendChild(objective)
+
+  const restartButton = document.createElement('button')
+  restartButton.classList.add('restart')
+  restartButton.textContent = 'Restart'
+  restartButton.addEventListener('click', () => {
+    objective.textContent = 'Start Button Piece Available!'
+    removeTable()
+    state = slideShuffle()
+    createVaultTable()
+  })
+  sidebar.appendChild(restartButton)
+
+  const exitButton = document.createElement('button')
+  exitButton.classList.add('exit')
+  exitButton.textContent = 'Head Back'
+  exitButton.addEventListener('click', removeOverlay)
+  sidebar.appendChild(exitButton)
+
+  // create the table
+  const createVaultTable = () => {
+    let index = 0
+    const table = document.createElement('table')
+    for (let i = 0; i < 4; i++) {
+      const row = document.createElement('tr')
+      for (let n = 0; n < 4; n++) {
+        const tile = document.createElement('td')
+        tile.textContent = state[index]
+        index++
+        tile.addEventListener('click', event => {
+          const tarIndex = state.indexOf(event.target.textContent)
+          const check = []
+          const leftEdge = [4, 8, 12]
+          const rightEdge = [3, 7, 11]
+          if (leftEdge.includes(tarIndex)) {
+            check.push(state[tarIndex + 1])
+            check.push(state[tarIndex - 4])
+            check.push(state[tarIndex + 4])
+          } else if (rightEdge.includes(tarIndex)) {
+            check.push(state[tarIndex - 1])
+            check.push(state[tarIndex - 4])
+            check.push(state[tarIndex + 4])
+          } else {
+            for (let i = 1; i < 5; i += 3) {
+              check.push(state[tarIndex + i])
+              check.push(state[tarIndex - i])
+            }
+          }
+          if (check.includes('')) {
+            const temp = state[tarIndex]
+            state[state.indexOf('')] = temp
+            state[tarIndex] = ''
+            if (winCheck(state)) {
+              objective.textContent = 'You\nWon!'
+              state[15] = '16'
+            }
+            removeTable()
+            createVaultTable()
+          }
+        })
+        row.appendChild(tile)
+      }
+      table.appendChild(row)
+    }
+    overlay.appendChild(table)
+    overlay.appendChild(sidebar)
+  }
+  createVaultTable()
 }
