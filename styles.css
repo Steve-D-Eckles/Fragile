@@ -142,10 +142,19 @@ td span {
   margin: auto;
 }
 
+#gambler-display {
+  width: 410px;
+  height: 410px;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .gamble-buttons {
   padding-top: 20px;
 }
-
 .gambler-button, .gamble-low, .gamble-high {
   border: 1px solid black;
   font-size: 36pt;

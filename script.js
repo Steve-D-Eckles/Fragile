@@ -242,15 +242,41 @@ function gambler () {
   // This runs an unnamed function
   let total = 0
   let points = 0
-  button.addEventListener('click', () => {
+// sidebar starts here
+  const sidebar = document.createElement('div')
+  sidebar.classList.add('sidebar')
+
+  const objective = document.createElement('p')
+  objective.classList.add('objective')
+  objective.textContent = 'Start Button Piece Available!'
+  sidebar.appendChild(objective)
+
+  const restartButton = document.createElement('button')
+  restartButton.classList.add('restart')
+  restartButton.textContent = 'Restart'
+  restartButton.addEventListener('click', () => {
     total = 0
-    button.remove()
+    points = 0
+    objective.textContent = 'Start Button Piece Available!'
+    document.getElementById('gambler-display').remove()
+    drawGame()
+  })
+  sidebar.appendChild(restartButton)
+
+  const exitButton = document.createElement('button')
+  exitButton.classList.add('exit')
+  exitButton.textContent = 'Head Back'
+  exitButton.addEventListener('click', removeOverlay)
+  sidebar.appendChild(exitButton)
+  // sidebar ends here
+
+  const drawGame = () => {
     const gamblerGame = document.createElement('div')
     gamblerGame.classList.add('gambler-game')
     const gamblerTotal = document.createElement('div')
     gamblerTotal.classList.add('gambler-total')
     const gamblerDisplay = document.createElement('div')
-    gamblerDisplay.classList.add('gambler-display')
+    gamblerDisplay.setAttribute('id', 'gambler-display')
     gamblerGame.appendChild(gamblerTotal)
     for (let i = 0; i < 1; i++) {
       const gamblerDice = document.createElement('div')
@@ -288,7 +314,14 @@ function gambler () {
     gamblerDisplay.appendChild(gamblerGame)
     gamblerDisplay.appendChild(gambleButtons)
     overlay.appendChild(gamblerDisplay)
+    overlay.appendChild(sidebar)
+  }
 
+
+  button.addEventListener('click', () => {
+    total = 0
+    button.remove()
+    drawGame()
   })
 
   // define variables used in the "checkGuess" and "generate" functions
@@ -309,7 +342,9 @@ function gambler () {
     const newTotal = Number(square0.textContent) + Number(square1.textContent)
     gamblerTotal.textContent = newTotal
     const gambleChoice = Array.from(event.target.classList)
-    // if "gamble-low" is clicked, set "guess" to 0
+
+
+
     if (gambleChoice.includes('gamble-low')) {
       guess = 0
       //console.log(guess)
@@ -322,6 +357,7 @@ function gambler () {
       if (newTotal >= total) {
         points = 0
       }
+      objective.textContent = 'You correctly guessed ' + points + ' out of 5 times in a row!'
       console.log("points = " + points)
       // if "newTotal" >= "total" AND "guess" = 0, set points to zero
     }
@@ -339,12 +375,19 @@ function gambler () {
       if (newTotal > total) {
         points ++
       }
+      objective.textContent = 'You correctly guessed ' + points + ' out of 5 times in a row!'
       console.log("points = " + points)
     }
     console.log(guess)
     // store "total" in "old-total"
     // roll "total"
     // compare
+
+    // win condition goes here
+    if (points >= 5) {
+      objective.textContent = 'You won!'
+      // finish the win condition
+    }
   }
 }
 
