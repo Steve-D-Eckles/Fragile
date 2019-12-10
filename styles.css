@@ -155,7 +155,6 @@ td span {
 .gamble-buttons {
   padding-top: 20px;
 }
-
 .gambler-button, .gamble-low, .gamble-high {
   border: 1px solid black;
   font-size: 36pt;
@@ -192,11 +191,39 @@ td span {
 #maze-piece {
   width: 20px;
   height: 25px;
-  border: 1px solid black;
   font-size: 2rem;
   position: absolute;
   bottom: 0;
   left: 0;
+  cursor: pointer
+}
+
+#maze-piece.grabbed {
+  cursor: none;
+  z-index: 1;
+}
+
+.goal {
+  height: 50px;
+  width: 50px;
+  background-color: rgba(0, 255, 0, 0.5);
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.obstacle {
+  height: 50px;
+  width: 380px;
+  position: absolute;
+  background-color: black;
+}
+
+.topstacle {
+  height: 60px;
+  width: 50px;
+  position: absolute;
+  background-color: black;
 }
 
 /* Info Text */

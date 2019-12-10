@@ -485,14 +485,14 @@ function drain () {
 
   const objective = document.createElement('p')
   objective.classList.add('objective')
-  objective.textContent = 'Start Button Piece Available!'
+  objective.textContent = collected.includes('drain') ? 'Piece already collected.' : 'Start Button Piece Available!'
   sidebar.appendChild(objective)
 
   const restartButton = document.createElement('button')
   restartButton.classList.add('restart')
   restartButton.textContent = 'Restart'
   restartButton.addEventListener('click', () => {
-    objective.textContent = 'Start Button Piece Available!'
+    objective.textContent = collected.includes('drain') ? 'Piece already collected.' : 'Start Button Piece Available!'
     document.getElementById('maze').remove()
     createMaze()
   })
@@ -505,12 +505,73 @@ function drain () {
   sidebar.appendChild(exitButton)
 
   const createMaze = () => {
+    let x = 0
+    let y = 0
     const maze = document.createElement('div')
     maze.setAttribute('id', 'maze')
     const piece = document.createElement('div')
     piece.setAttribute('id', 'maze-piece')
     piece.textContent = '⭐'
+    piece.addEventListener('click', () => {
+      piece.classList.add('grabbed')
+    })
+    window.addEventListener('mousemove', event => {
+      const classArr = Array.from(piece.classList)
+      if (classArr.includes('grabbed')) {
+        x = x + event.movementX
+        y = y - event.movementY
+        piece.style.bottom = y + 'px'
+        piece.style.left = x + 'px'
+        if ((x >= 360 && x < 390) && (y >= 350 && y < 385)) {
+          piece.classList.remove('grabbed')
+          piece.remove()
+          if (!collected.includes('drain')) {
+            collected.push('drain')
+            objective.textContent = 'Start button piece retrieved!'
+          } else {
+            objective.textContent = 'You Win!'
+          }
+        } else if ((x < 0 || x > 390) || (y < 0 || y > 385) ||
+                  ((y > 9 && y < 77) && x < 380) ||
+                  ((y > 89 && y < 157) && x > 10) ||
+                  ((y > 169 && y < 237) && x < 380) ||
+                  ((y > 249 && y < 317) && x > 10) ||
+                  ((y < 376 && y > 318) && (x > 48 && x < 118)) ||
+                  (y > 327 && (x > 128 && x < 198)) ||
+                  ((y < 376 && y > 318) && (x > 208 && x < 278)) ||
+                  (y > 327 && (x > 288 && x < 358))) {
+          piece.classList.remove('grabbed')
+          x = 0
+          y = 0
+          piece.style.bottom = '0px'
+          piece.style.left = '0px'
+        }
+      }
+    })
     maze.appendChild(piece)
+
+    const goal = document.createElement('div')
+    goal.classList.add('goal')
+    maze.appendChild(goal)
+    let alt = 0
+    for (let i = 30; i < 350; i += 80) {
+      const obstacle = document.createElement('div')
+      obstacle.classList.add('obstacle')
+      obstacle.style.bottom = i + 'px'
+      obstacle.style.left = alt + 'px'
+      alt = alt === 0 ? 30 : 0
+      maze.appendChild(obstacle)
+    }
+    alt = 0
+    for (let i = 50; i < 370; i += 80) {
+      const topstacle = document.createElement('div')
+      topstacle.classList.add('topstacle')
+      topstacle.style.top = alt + 'px'
+      topstacle.style.right = i + 'px'
+      alt = alt === 0 ? 30 : 0
+      maze.appendChild(topstacle)
+    }
+
     overlay.appendChild(maze)
     overlay.appendChild(sidebar)
   }
