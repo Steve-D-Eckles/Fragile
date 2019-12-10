@@ -1,7 +1,7 @@
 const start = document.getElementById('start')
 const main = document.body.children[0]
 const infoBox = document.createElement('p')
-let collected = 0
+const collected = []
 start.addEventListener('click', gameStart)
 
 // remove the start button; add the navigation buttons
@@ -72,7 +72,7 @@ function navInfo (event) {
 }
 
 function statusUpdate () {
-  infoBox.textContent = `Looks like you've still got ${4 - collected} pieces to find.`
+  infoBox.textContent = `Looks like you've still got ${4 - collected.length} pieces to find.`
 }
 
 function travel (event) {
@@ -119,7 +119,8 @@ function forest () {
 
   const objective = document.createElement('p')
   objective.classList.add('objective')
-  objective.textContent = 'Start Button Piece Available!'
+  objective.textContent = collected.includes('forest') ? 'Piece already collected.' : 'Start Button Piece Available!'
+
   sidebar.appendChild(objective)
 
   const restartButton = document.createElement('button')
@@ -131,7 +132,7 @@ function forest () {
     prevTarget = undefined
     delayFlag = false
     attemptCounter.textContent = `Remaining attempts:\n${attempts}`
-    objective.textContent = 'Start Button Piece Available!'
+    objective.textContent = collected.includes('forest') ? 'Piece already collected.' : 'Start Button Piece Available!'
     removeTable()
     createMemoryTable()
   })
@@ -180,7 +181,14 @@ function forest () {
               } else {
                 arr.push(prevTarget.textContent)
                 if (arr.length === 8) {
-                  objective.textContent = 'Button Piece\nRetrieved!'
+                  if (!collected.includes('forest')) {
+                      collected.push('forest')
+                      objective.textContent = 'Button Piece\nRetrieved!'
+                  } else {
+                    objective.textContent = 'Button Piece\nAlready Retrieved!'
+                  // otherwise, nothing about the game's overall state changes
+                    // Text: "You already won this piece of the start button."
+                  }
                   delayFlag = true
                 }
                 prevTarget = undefined // clear the previous target
@@ -214,6 +222,7 @@ function removeOverlay () {
   }
   overlay.remove()
   currentlyPlaying = false
+  statusUpdate()
 }
 
 function removeTable () {
@@ -248,7 +257,7 @@ function gambler () {
 
   const objective = document.createElement('p')
   objective.classList.add('objective')
-  objective.textContent = 'Start Button Piece Available!'
+  objective.textContent = collected.includes('gambler') ? 'Piece already collected.' : 'Start Button Piece Available!'
   sidebar.appendChild(objective)
 
   const restartButton = document.createElement('button')
@@ -257,7 +266,7 @@ function gambler () {
   restartButton.addEventListener('click', () => {
     total = 0
     points = 0
-    objective.textContent = 'Start Button Piece Available!'
+    objective.textContent = collected.includes('gambler') ? 'Piece already collected.' : 'Start Button Piece Available!'
     document.getElementById('gambler-display').remove()
     drawGame()
   })
@@ -325,14 +334,7 @@ function gambler () {
   })
 
   // define variables used in the "checkGuess" and "generate" functions
-  let guess = 0;
   function checkGuess (event) {
-    //console.log("NEEDS WORK")
-
-    // if "gamble-low" is clicked and the next roll is lower, award a point
-    // if "gamble-low" is clicked and the next roll is higher, set points to zero
-    // if "gamble-high" is clicked and the next roll is higher, award a point
-    // if "gamble-high" is clicked and the next roll is lower, set points to zero
     const gamblerTotal = document.getElementsByClassName('gambler-total')[0]
     total = Number(gamblerTotal.textContent)
     const square0 = document.querySelector(".gambler-square0")
@@ -343,49 +345,35 @@ function gambler () {
     gamblerTotal.textContent = newTotal
     const gambleChoice = Array.from(event.target.classList)
 
-
-
     if (gambleChoice.includes('gamble-low')) {
-      guess = 0
-      //console.log(guess)
-      console.log(total)
-      console.log(newTotal)
-      // if "newTotal" < "total" AND "guess" = 0, award a point
+      // if "newTotal" < "total", award a point
       if (newTotal < total) {
         points ++;
       }
+      // if "newTotal" >= "total", set points to zero
       if (newTotal >= total) {
         points = 0
       }
       objective.textContent = 'You correctly guessed ' + points + ' out of 5 times in a row!'
-      console.log("points = " + points)
-      // if "newTotal" >= "total" AND "guess" = 0, set points to zero
     }
-    // if "gamble-high" is clicked, set "guess" to 1
     if (gambleChoice.includes('gamble-high')) {
-      guess = 1
-      //console.log(guess)
-      console.log(total)
-      console.log(newTotal)
-      // if "newTotal" < "total" AND "guess" = 1, set points to zero
+      // if "newTotal" < "total", set points to zero
       if (newTotal <= total) {
         points = 0
       }
-      // if "newTotal" > "total" AND "guess" = 1, award a point
+      // if "newTotal" > "total", award a point
       if (newTotal > total) {
         points ++
       }
       objective.textContent = 'You correctly guessed ' + points + ' out of 5 times in a row!'
-      console.log("points = " + points)
     }
-    console.log(guess)
-    // store "total" in "old-total"
-    // roll "total"
-    // compare
-
-    // win condition goes here
     if (points >= 5) {
-      objective.textContent = 'You won!'
+      if (!collected.includes('gambler')) {
+        collected.push('gambler')
+        objective.textContent = 'You have won a piece of the start button!'
+      } else {
+        objective.textContent = 'You have already won this piece.'
+      }
       // finish the win condition
     }
   }
@@ -415,14 +403,14 @@ function vault () {
 
   const objective = document.createElement('p')
   objective.classList.add('objective')
-  objective.textContent = 'Start Button Piece Available!'
+  objective.textContent = collected.includes('vault') ? 'Piece already collected.' : 'Start Button Piece Available!'
   sidebar.appendChild(objective)
 
   const restartButton = document.createElement('button')
   restartButton.classList.add('restart')
   restartButton.textContent = 'Restart'
   restartButton.addEventListener('click', () => {
-    objective.textContent = 'Start Button Piece Available!'
+    objective.textContent = collected.includes('vault') ? 'Piece already collected.' : 'Start Button Piece Available!'
     removeTable()
     state = slideShuffle()
     createVaultTable()
@@ -469,7 +457,12 @@ function vault () {
             state[state.indexOf('')] = temp
             state[tarIndex] = ''
             if (winCheck(state)) {
-              objective.textContent = 'You\nWon!'
+              if (!collected.includes('vault')) {
+                collected.push('vault')
+                objective.textContent = 'You\nWon!'
+              } else {
+                objective.textContent = 'You have already won.'
+              }
               state[15] = '16'
             }
             removeTable()
