@@ -50,6 +50,12 @@ function gameStart () {
 
 // create an overlay div
 const overlay = document.createElement('div')
+overlay.classList.add('overlay')
+
+// create an instruction box
+const instruct = document.createElement('p')
+instruct.classList.add('instruct')
+
 // flag to prevent attempting to open multiple games
 let currentlyPlaying = false
 
@@ -80,23 +86,37 @@ function travel (event) {
     currentlyPlaying = true
     // create div
     // give it a class "overlay"
-    overlay.classList.add('overlay')
     main.appendChild(overlay)
     // determine the game being played
     const targetClasses = Array.from(event.target.classList)
     if (targetClasses.includes('forest')) {
       // call "forest" function
       forest()
+      instruct.textContent = "We'll let you have your piece back if you win our " +
+        "memory game! Click a tile to reveal it. Reveal two matching tiles and they'll " +
+        "stay revealed; otherwise, they'll be hidden again. Reveal all tiles to win!"
     }
     if (targetClasses.includes('gambler')) {
       gambler()
+      instruct.textContent = "You want your piece back? Let's play a game for it! " +
+        "I'll roll two dice and show you the total. You guess if the total of my next " +
+        'roll will be higher or lower. Guess correctly five times in a row and you win ' +
+        "the piece. I win if you guess wrong, and that means we keep playing. I'm very lonely."
     }
     if (targetClasses.includes('vault')) {
       vault()
+      instruct.textContent = 'Yeah, we found a piece and tossed it in the vault.' +
+        "You're welcome to have it back, but they recently changed the locks and " +
+        "We're not good at opening it. You have to slide the tiles around until it matches " +
+        'the solution.'
     }
     if (targetClasses.includes('drain')) {
       drain()
+      instruct.textContent = "Wow, that's a pretty convoluted drainage system. You'll " +
+        'have to click the piece to select it, then carefully move your cursor through ' +
+        'the pipes without touching the sides.'
     }
+    main.appendChild(instruct)
   }
 }
 
@@ -182,8 +202,8 @@ function forest () {
                 arr.push(prevTarget.textContent)
                 if (arr.length === 8) {
                   if (!collected.includes('forest')) {
-                      collected.push('forest')
-                      objective.textContent = 'Button Piece\nRetrieved!'
+                    collected.push('forest')
+                    objective.textContent = 'Button Piece\nRetrieved!'
                   } else {
                     objective.textContent = 'Button Piece\nAlready Retrieved!'
                   // otherwise, nothing about the game's overall state changes
@@ -222,6 +242,7 @@ function removeOverlay () {
   }
   overlay.remove()
   currentlyPlaying = false
+  instruct.remove()
   statusUpdate()
 }
 
@@ -382,7 +403,7 @@ function gambler () {
 function vault () {
   // define starting configuration
   const slideShuffle = () => {
-    const start = ['', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15']
+    const start = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '']
     const state = []
     while (start.length > 0) {
       state.push(String(start.splice(Math.random() * start.length, 1)))
@@ -405,6 +426,34 @@ function vault () {
   objective.classList.add('objective')
   objective.textContent = collected.includes('vault') ? 'Piece already collected.' : 'Start Button Piece Available!'
   sidebar.appendChild(objective)
+
+  const solution = document.createElement('button')
+  const solved = document.createElement('div')
+  solved.classList.add('solved')
+  solution.classList.add('solution')
+  solution.textContent = 'Solution'
+  solution.addEventListener('mouseenter', () => {
+    const sTable = document.createElement('table')
+    let sRow = document.createElement('tr')
+    for (let i = 1; i <= 16; i++) {
+      const sData = document.createElement('td')
+      sData.textContent = i
+      sRow.appendChild(sData)
+      if (i % 4 === 0) {
+        sTable.appendChild(sRow)
+        sRow = document.createElement('tr')
+      }
+    }
+    solved.appendChild(sTable)
+    main.appendChild(solved)
+  })
+  solution.addEventListener('mouseleave', () => {
+    while (solved.firstChild) {
+      solved.firstChild.remove()
+    }
+    solved.remove()
+  })
+  sidebar.appendChild(solution)
 
   const restartButton = document.createElement('button')
   restartButton.classList.add('restart')
