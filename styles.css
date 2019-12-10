@@ -237,3 +237,10 @@ td span {
   padding: 1rem;
   text-align: center;
 }
+
+.assemble {
+  position: absolute;
+  top: 310px;
+  font-size: 2rem;
+  padding: 0.5rem;
+}

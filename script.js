@@ -72,7 +72,32 @@ function navInfo (event) {
 }
 
 function statusUpdate () {
-  infoBox.textContent = `Looks like you've still got ${4 - collected.length} pieces to find.`
+  if (collected.length < 4) {
+    infoBox.textContent = `Looks like you've still got ${4 - collected.length} piece${4 - collected.length > 1 ? 's' : ''} to find.`
+  } else {
+    infoBox.textContent = 'Looks like you found all the pieces! Hit the button to assemble the start button.'
+    // create button "Assemble"
+    const assemble = document.createElement('button')
+    assemble.classList.add('assemble')
+    assemble.textContent = 'Assemble'
+    assemble.addEventListener('click', () => {
+      assemble.remove()
+      start.style.visibility = ''
+      infoBox.textContent = 'Alright! You can finally start the real game. Try to hit it gently this time!'
+      start.addEventListener('click', () => {
+        main.remove()
+        setTimeout(() => {
+          alert('Oops everything broke ( ͡° ͜ʖ ͡°)')
+        }, 100)
+      })
+    })
+    main.appendChild(assemble)
+      // when "assemble" is clicked, remove "assemble", add "start button"
+        // set "start button"
+          // start.style.visibility = ''
+        // add start.addEventListener(click, alert)
+        // keep infoBox ?
+  }
 }
 
 function travel (event) {
