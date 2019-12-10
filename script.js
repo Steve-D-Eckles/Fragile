@@ -98,11 +98,6 @@ function statusUpdate () {
       })
     })
     main.appendChild(assemble)
-      // when "assemble" is clicked, remove "assemble", add "start button"
-        // set "start button"
-          // start.style.visibility = ''
-        // add start.addEventListener(click, alert)
-        // keep infoBox ?
   }
 }
 
@@ -290,14 +285,14 @@ function gambler () {
   // Add "Wanna Play?" button
   const button = document.createElement('button')
   button.classList.add('gambler-button')
-  button.innerHTML = "Wanna play?";
+  button.innerHTML = 'Wanna play?'
   overlay.appendChild(button)
   // Make two (maybe 4) squares once the "Wanna Play?" button is clicked
-    // Remove the "Wanna play?" button, make the squares
+  // Remove the "Wanna play?" button, make the squares
   // This runs an unnamed function
   let total = 0
   let points = 0
-// sidebar starts here
+  // sidebar starts here
   const sidebar = document.createElement('div')
   sidebar.classList.add('sidebar')
 
@@ -338,9 +333,9 @@ function gambler () {
       gamblerDice.classList.add('gambler-dice')
       for (let n = 0; n < 2; n++) {
         const gamblerSquare = document.createElement('p')
-        gamblerSquare.classList.add('gambler-square'+n)
+        gamblerSquare.classList.add('gambler-square' + n)
         // the following 2 lines insert random numbers into the squares
-        gamblerSquare.textContent = Math.floor(Math.random()*6) + 1
+        gamblerSquare.textContent = Math.floor(Math.random() * 6) + 1
         total += Number(gamblerSquare.textContent)
 
         gamblerDice.appendChild(gamblerSquare)
@@ -355,12 +350,12 @@ function gambler () {
 
     const gambleButtonLow = document.createElement('button')
     gambleButtonLow.classList.add('gamble-low')
-    gambleButtonLow.textContent = "Guess lower"
+    gambleButtonLow.textContent = 'Guess lower'
     gambleButtonLow.addEventListener('click', checkGuess)
 
     const gambleButtonHigh = document.createElement('button')
     gambleButtonHigh.classList.add('gamble-high')
-    gambleButtonHigh.textContent = "Guess higher"
+    gambleButtonHigh.textContent = 'Guess higher'
     gambleButtonHigh.addEventListener('click', checkGuess)
 
     gambleButtons.appendChild(gambleButtonLow)
@@ -372,7 +367,6 @@ function gambler () {
     overlay.appendChild(sidebar)
   }
 
-
   button.addEventListener('click', () => {
     total = 0
     button.remove()
@@ -383,10 +377,10 @@ function gambler () {
   function checkGuess (event) {
     const gamblerTotal = document.getElementsByClassName('gambler-total')[0]
     total = Number(gamblerTotal.textContent)
-    const square0 = document.querySelector(".gambler-square0")
-    const square1 = document.querySelector(".gambler-square1")
-    square0.textContent = Math.floor(Math.random()*6) + 1
-    square1.textContent = Math.floor(Math.random()*6) + 1
+    const square0 = document.querySelector('.gambler-square0')
+    const square1 = document.querySelector('.gambler-square1')
+    square0.textContent = Math.floor(Math.random() * 6) + 1
+    square1.textContent = Math.floor(Math.random() * 6) + 1
     const newTotal = Number(square0.textContent) + Number(square1.textContent)
     gamblerTotal.textContent = newTotal
     const gambleChoice = Array.from(event.target.classList)
@@ -394,7 +388,7 @@ function gambler () {
     if (gambleChoice.includes('gamble-low')) {
       // if "newTotal" < "total", award a point
       if (newTotal < total) {
-        points ++;
+        points++
       }
       // if "newTotal" >= "total", set points to zero
       if (newTotal >= total) {
@@ -409,7 +403,7 @@ function gambler () {
       }
       // if "newTotal" > "total", award a point
       if (newTotal > total) {
-        points ++
+        points++
       }
       objective.textContent = 'You correctly guessed ' + points + ' out of 5 times in a row!'
     }
