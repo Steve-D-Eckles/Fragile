@@ -1,7 +1,7 @@
 const start = document.getElementById('start')
 const main = document.body.children[0]
 const infoBox = document.createElement('p')
-let collected = 0
+const collected = []
 start.addEventListener('click', gameStart)
 
 // remove the start button; add the navigation buttons
@@ -492,14 +492,14 @@ function drain () {
 
   const objective = document.createElement('p')
   objective.classList.add('objective')
-  objective.textContent = 'Start Button Piece Available!'
+  objective.textContent = collected.includes('drain') ? 'Piece already collected.' : 'Start Button Piece Available!'
   sidebar.appendChild(objective)
 
   const restartButton = document.createElement('button')
   restartButton.classList.add('restart')
   restartButton.textContent = 'Restart'
   restartButton.addEventListener('click', () => {
-    objective.textContent = 'Start Button Piece Available!'
+    objective.textContent = collected.includes('drain') ? 'Piece already collected.' : 'Start Button Piece Available!'
     document.getElementById('maze').remove()
     createMaze()
   })
@@ -532,8 +532,21 @@ function drain () {
         if ((x >= 360 && x < 390) && (y >= 350 && y < 385)) {
           piece.classList.remove('grabbed')
           piece.remove()
-          objective.textContent = 'You Won!'
-        } else if ((x < 0 || x > 390) || (y < 0 || y > 385)) {
+          if (!collected.includes('drain')) {
+            collected.push('drain')
+            objective.textContent = 'Start button piece retrieved!'
+          } else {
+            objective.textContent = 'You Win!'
+          }
+        } else if ((x < 0 || x > 390) || (y < 0 || y > 385) ||
+                  ((y > 9 && y < 77) && x < 380) ||
+                  ((y > 89 && y < 157) && x > 10) ||
+                  ((y > 169 && y < 237) && x < 380) ||
+                  ((y > 249 && y < 317) && x > 10) ||
+                  ((y < 376 && y > 318) && (x > 48 && x < 118)) ||
+                  (y > 327 && (x > 128 && x < 198)) ||
+                  ((y < 376 && y > 318) && (x > 208 && x < 278)) ||
+                  (y > 327 && (x > 288 && x < 358))) {
           piece.classList.remove('grabbed')
           x = 0
           y = 0
@@ -562,7 +575,7 @@ function drain () {
       topstacle.classList.add('topstacle')
       topstacle.style.top = alt + 'px'
       topstacle.style.right = i + 'px'
-      alt = alt === 0 ? 50 : 0
+      alt = alt === 0 ? 30 : 0
       maze.appendChild(topstacle)
     }
 
