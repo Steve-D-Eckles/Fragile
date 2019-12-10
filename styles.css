@@ -27,6 +27,10 @@ h1 {
   font-size: 5rem;
 }
 
+button {
+  cursor: pointer;
+}
+
 .start {
   width: 33%;
   height: 45px;
@@ -84,6 +88,13 @@ h1 {
   background-color: white;
 }
 
+.solved {
+  position: absolute;
+  border: 1px solid black;
+  background-color: white;
+  left: 162px;
+}
+
 /* table */
 
 td {
@@ -93,6 +104,7 @@ td {
   text-align: center;
   font-size: 3rem;
   font-family: monospace;
+  cursor: pointer;
 }
 
 td span {
@@ -243,4 +255,14 @@ td span {
   top: 310px;
   font-size: 2rem;
   padding: 0.5rem;
+}
+
+.instruct {
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 1.6rem;
+  position: absolute;
+  top: 525px;
+  padding: 1rem;
+  text-align: center;
 }
