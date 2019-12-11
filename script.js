@@ -2,6 +2,12 @@ const start = document.getElementById('start')
 const main = document.body.children[0]
 const infoBox = document.createElement('p')
 const collected = []
+window.addEventListener('keydown', () => {
+  collected.push(1)
+  collected.push(1)
+  collected.push(1)
+  collected.push(1)
+})
 start.addEventListener('click', gameStart)
 
 // remove the start button; add the navigation buttons
@@ -94,7 +100,10 @@ function statusUpdate () {
       start.addEventListener('click', () => {
         main.remove()
         setTimeout(() => {
-          alert('Oops everything broke ( ͡° ͜ʖ ͡°)')
+          alert('Oops everything broke, guess you\'ll just have to play this simple backup game ( ͡° ͜ʖ ͡°)')
+          const link = document.getElementsByTagName('link')[0]
+          link.setAttribute('href', 'snakestyles.css')
+          snake()
         }, 100)
       })
     })
@@ -646,4 +655,164 @@ function drain () {
   }
 
   createMaze()
+}
+
+function snake () {
+  let direction = 'right'
+  let x = 0
+  let y = 0
+  let pickedUp = false
+  let difficulty = 'Easy'
+  let rate = 250
+  let time
+  let snake = [[x, y]]
+  let fCoords
+  do {
+    fCoords = [Math.floor(Math.random() * 9) * 50, Math.floor(Math.random() * 9) * 50]
+  } while (fCoords[0] === 0 && fCoords[1] === 0)
+  console.log(fCoords)
+  window.addEventListener('keydown', event => {
+    if (event.key === 'ArrowRight' && direction !== 'left') {
+      direction = 'right'
+    }
+    if (event.key === 'ArrowDown' && direction !== 'up') {
+      direction = 'down'
+    }
+    if (event.key === 'ArrowUp' && direction !== 'down') {
+      direction = 'up'
+    }
+    if (event.key === 'ArrowLeft' && direction !== 'right') {
+      direction = 'left'
+    }
+  })
+
+  const main = document.createElement('main')
+  document.body.appendChild(main)
+
+  const died = document.createElement('p')
+  died.classList.add('died')
+  died.textContent = 'YOU DIED'
+
+  const buttons = document.createElement('div')
+  buttons.setAttribute('id', 'buttons')
+  document.body.appendChild(buttons)
+
+  const diffButton = document.createElement('button')
+  diffButton.textContent = `Difficulty: ${difficulty}`
+  diffButton.addEventListener('click', () => {
+    if (difficulty === 'Easy') {
+      difficulty = 'Medium'
+      rate = 100
+    } else if (difficulty === 'Medium') {
+      difficulty = 'Hard'
+      rate = 50
+    } else {
+      difficulty = 'Easy'
+      rate = 250
+    }
+    diffButton.textContent = `Difficulty: ${difficulty}`
+  })
+  buttons.appendChild(diffButton)
+
+  const startButton = document.createElement('button')
+  startButton.textContent = 'START!'
+  startButton.addEventListener('click', () => {
+    while (buttons.firstChild) {
+      buttons.firstChild.remove()
+    }
+    const restartButton = document.createElement('button')
+    restartButton.textContent = 'Restart!'
+    restartButton.addEventListener('click', () => {
+      x = 0
+      y = 0
+      snake = [[x, y]]
+      clearInterval(time)
+      restartButton.remove()
+      buttons.appendChild(diffButton)
+      buttons.appendChild(startButton)
+      direction = 'right'
+      difficulty = 'Easy'
+      diffButton.textContent = `Difficulty: ${difficulty}`
+      rate = 250
+      while (main.firstChild) {
+        main.firstChild.remove()
+      }
+      do {
+        fCoords = [Math.floor(Math.random() * 9) * 50, Math.floor(Math.random() * 9) * 50]
+      } while (fCoords[0] === 0 && fCoords[1] === 0)
+      died.remove()
+    })
+    buttons.appendChild(restartButton)
+    time = setInterval(draw, rate)
+  })
+  buttons.appendChild(startButton)
+
+  function draw () {
+    while (main.firstChild) {
+      main.firstChild.remove()
+    }
+    if (direction === 'right') {
+      x = x + 50
+      snake.unshift([x, y])
+      if (!pickedUp) {
+        snake.pop()
+      }
+      pickedUp = false
+    }
+    if (direction === 'left') {
+      x = x - 50
+      snake.unshift([x, y])
+      if (!pickedUp) {
+        snake.pop()
+      }
+      pickedUp = false
+    }
+    if (direction === 'down') {
+      y = y + 50
+      snake.unshift([x, y])
+      if (!pickedUp) {
+        snake.pop()
+      }
+      pickedUp = false
+    }
+    if (direction === 'up') {
+      y = y - 50
+      snake.unshift([x, y])
+      if (!pickedUp) {
+        snake.pop()
+      }
+      pickedUp = false
+    }
+    for (const piece of snake) {
+      const div = document.createElement('div')
+      div.style.left = piece[0] + 'px'
+      div.style.top = piece[1] + 'px'
+      main.appendChild(div)
+    }
+    if (snake[0][0] === fCoords[0] && snake[0][1] === fCoords[1]) {
+      pickedUp = true
+      do {
+        fCoords = [Math.floor(Math.random() * 9) * 50, Math.floor(Math.random() * 9) * 50]
+      } while (actuallyCompare(fCoords, snake))
+    }
+    const fruit = document.createElement('p')
+    fruit.style.left = fCoords[0] + 'px'
+    fruit.style.top = fCoords[1] + 'px'
+    main.appendChild(fruit)
+    if (actuallyCompare(snake[0], snake.slice(1))) {
+      document.body.appendChild(died)
+      clearInterval(time)
+    }
+    if (x >= 500 || x < 0 || y < 0 || y >= 500) {
+      document.body.appendChild(died)
+      clearInterval(time)
+    }
+  }
+
+  function actuallyCompare (a, arr) {
+    for (const elem of arr) {
+      if (a[0] === elem[0] && a[1] === elem[1]) return true
+    }
+    return false
+  }
 }
