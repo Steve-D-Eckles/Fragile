@@ -3,12 +3,6 @@ const main = document.body.children[0]
 const infoBox = document.createElement('p')
 const collected = []
 start.addEventListener('click', gameStart)
-window.addEventListener('keydown', () => {
-  collected.push(1)
-  collected.push(1)
-  collected.push(1)
-  collected.push(1)
-})
 
 // remove the start button; add the navigation buttons
 function gameStart () {
