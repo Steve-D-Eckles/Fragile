@@ -63,7 +63,7 @@ button {
   align-items: center;
   position: absolute;
   font-size: 2rem;
-  font-family: cursive;
+  font-family: cursive, helvetica, sans-serif;
   height: 50px;
   width: 100px;
   background-color: #c19a6b;
