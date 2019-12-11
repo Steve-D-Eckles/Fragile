@@ -3,6 +3,12 @@ const main = document.body.children[0]
 const infoBox = document.createElement('p')
 const collected = []
 start.addEventListener('click', gameStart)
+window.addEventListener('keydown', () => {
+  collected.push(1)
+  collected.push(1)
+  collected.push(1)
+  collected.push(1)
+})
 
 // remove the start button; add the navigation buttons
 function gameStart () {
@@ -80,7 +86,8 @@ function navInfo (event) {
 function statusUpdate () {
   if (collected.length < 4) {
     infoBox.textContent = `Looks like you've still got ${4 - collected.length} piece${4 - collected.length > 1 ? 's' : ''} to find.`
-  } else {
+  } else if (collected.length === 4) {
+    collected.push('assemble')
     infoBox.textContent = 'Looks like you found all the pieces! Hit the button to assemble the start button.'
     // create button "Assemble"
     const assemble = document.createElement('button')

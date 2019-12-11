@@ -86,6 +86,7 @@ button {
   width: 750px;
   border: solid black 1px;
   background-color: white;
+  z-index: 1;
 }
 
 .solved {
@@ -207,12 +208,11 @@ td span {
   position: absolute;
   bottom: 0;
   left: 0;
-  cursor: pointer
+  cursor: pointer;
 }
 
 #maze-piece.grabbed {
   cursor: none;
-  z-index: 1;
 }
 
 .goal {
