@@ -80,28 +80,37 @@ function navInfo (event) {
 function statusUpdate () {
   if (collected.length < 4) {
     infoBox.textContent = `Looks like you've still got ${4 - collected.length} piece${4 - collected.length > 1 ? 's' : ''} to find.`
-  } else if (collected.length === 4) {
-    collected.push('assemble')
+  } else {
     infoBox.textContent = 'Looks like you found all the pieces! Hit the button to assemble the start button.'
     // create button "Assemble"
-    const assemble = document.createElement('button')
-    assemble.classList.add('assemble')
-    assemble.textContent = 'Assemble'
-    assemble.addEventListener('click', () => {
-      assemble.remove()
-      start.style.visibility = ''
-      infoBox.textContent = 'Alright! You can finally start the real game. Try to hit it gently this time!'
-      start.addEventListener('click', () => {
-        main.remove()
-        setTimeout(() => {
-          alert('Oops everything broke, guess you\'ll just have to play this simple backup game ( ͡° ͜ʖ ͡°)')
-          const link = document.getElementsByTagName('link')[0]
-          link.setAttribute('href', 'snakestyles.css')
-          snake()
-        }, 100)
+    if (collected.length === 4) {
+      if (!collected.includes('assemble')) collected.push('assemble')
+      const assemble = document.createElement('button')
+      assemble.classList.add('assemble')
+      assemble.textContent = 'Assemble'
+      assemble.addEventListener('click', () => {
+        assemble.remove()
+        start.style.visibility = ''
+        infoBox.textContent = 'Alright! You can finally start the real game. Try to hit it gently this time!'
+        collected.push('start')
+        start.addEventListener('click', () => {
+          main.remove()
+          setTimeout(() => {
+            alert('Oops everything broke, guess you\'ll just have to play this simple backup game ( ͡° ͜ʖ ͡°)')
+            const link = document.getElementsByTagName('link')[0]
+            link.setAttribute('href', 'snakestyles.css')
+            snake()
+          }, 100)
+        })
       })
-    })
-    main.appendChild(assemble)
+      main.appendChild(assemble)
+    }
+    if (collected.length === 5) {
+      infoBox.textContent = 'Looks like you found all the pieces! Hit the button to assemble the start button.'
+    }
+    if (collected.length === 6) {
+      infoBox.textContent = 'Alright! You can finally start the real game. Try to hit it gently this time!'
+    }
   }
 }
 
