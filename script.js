@@ -587,6 +587,15 @@ function drain () {
     piece.addEventListener('click', () => {
       piece.classList.add('grabbed')
     })
+    const cheat = event => {
+      if (event.key === 'c') {
+        x = 360
+        y = 330
+        piece.style.left = x + 'px'
+        piece.style.bottom = y + 'px'
+      }
+    }
+    window.addEventListener('keydown', cheat)
     window.addEventListener('mousemove', event => {
       const classArr = Array.from(piece.classList)
       if (classArr.includes('grabbed')) {
